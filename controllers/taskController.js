@@ -1,21 +1,24 @@
 const taskModel = require("../models/taskModel");
 
+// Gets every task from the database.
 async function getAllTasks(req,res) {
 
     try{
         const tasks = await taskModel.getAllTasks();
 
-        res.status(200).json(tasks);
+        return res.status(200).json(tasks);
     }
 
     catch (error){
-        res.status(500).json({
+        console.error(error);
+        return res.status(500).json({
             message: "Failed to retrieve tasks."
         });
     }
 
 }
 
+// Gets one task using the ID written in the URL.
 async function getTaskById(req, res){
     
     const id = Number(req.params.id);
@@ -28,7 +31,7 @@ async function getTaskById(req, res){
 
     try{
         const task = await taskModel.getTaskById(id);
-
+        // db.get() returns undefined when no task is found.
         if (!task){
 
             return res.status(404).json({
@@ -44,32 +47,42 @@ async function getTaskById(req, res){
 
     catch(error){
 
-        console.error(error)
+        console.error(error);
         return res.status(500).json({
             message: "Unexpected failure."
         });
 
     }
 }
-
+// Creates a new task using the data sent in the request body.
 async function createTask(req, res) {
 
     const title = req.body.title;
     const description = req.body.description;
 
-    if (!title || title.trim() === ""){
+    if (typeof title !== "string" || title.trim() === ""){
         return res.status(400).json({
-        message: "Task title is missing."
+        message: "Task title must be a non empty string."
         });
-    } //Checks if the task title is missing or not. I used trim() to reject titles containing only spaces.
+    } // Reject missing titles, non text titles, and titles containing only spaces (using the .trim() method).
+
+    // The description is optional, but if it exists it must be text.
+    if (
+        description !== undefined &&
+        description !== null &&
+        typeof description !== "string") {
+            return res.status(400).json({
+            message: "Task description must be a string."
+        });
+        }
 
     try{
-        const createdTask = await taskModel.createTask(title, description);
+        const createdTask = await taskModel.createTask(title.trim(), description);
         return res.status(201).json(createdTask);
     }
 
     catch (error){
-        console.log(error);
+        console.error(error);
 
         return res.status(500).json({
             message: "Unexpected failure."

@@ -1,13 +1,13 @@
 {
   "name": "projet-api-cybercamp",
   "version": "1.0.0",
-  "description": "",
+  "description": "REST API for task management using Express and SQLite",
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Moemen Ouerghui",
   "license": "ISC",
   "dependencies": {
     "express": "^5.2.1",

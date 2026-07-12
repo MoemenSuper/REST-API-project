@@ -4,11 +4,13 @@ const path = require("path");
 
 async function connectDatabase(){
 
+    // Opens database.sqlite from the project root.
     const db = await open({
         filename: path.join(__dirname,"..","database.sqlite"),
         driver: sqlite3.Database
     });
 
+    // Creates the tasks table automatically if it does not exist yet.
     await db.exec(`
         CREATE TABLE IF NOT EXISTS tasks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
