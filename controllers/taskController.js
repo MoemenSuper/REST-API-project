@@ -3,8 +3,29 @@ const taskModel = require("../models/taskModel");
 // Gets every task from the database.
 async function getAllTasks(req,res) {
 
+    const { done, sort, order = "asc" } = req.query;
+    const allowedSortFields = ["id", "title", "created_at"];
+
+    if (done !== undefined && done !== "0" && done !== "1") {
+        return res.status(400).json({
+            message: "Done must be either 0 or 1."
+        });
+    }
+
+    if (sort !== undefined && !allowedSortFields.includes(sort)) {
+        return res.status(400).json({
+            message: "Invalid sort field."
+        });
+    }
+
+    if (order !== "asc" && order !== "desc") {
+        return res.status(400).json({
+            message: "Order must be asc or desc."
+        });
+    }
+
     try{
-        const tasks = await taskModel.getAllTasks();
+        const tasks = await taskModel.getAllTasks(done, sort, order);
 
         return res.status(200).json(tasks);
     }

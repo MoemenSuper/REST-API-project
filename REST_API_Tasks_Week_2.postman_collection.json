@@ -149,6 +149,69 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get unfinished tasks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/tasks?done=0"
+			},
+			"response": []
+		},
+		{
+			"name": "Get finished tasks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/tasks?done=1"
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid done value",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/tasks?done=yes"
+			},
+			"response": []
+		},
+		{
+			"name": "Sort tasks by title",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/tasks?sort=title&order=asc"
+			},
+			"response": []
+		},
+		{
+			"name": "Sort tasks by creation date",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/tasks?sort=created_at&order=desc"
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid sort field",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/tasks?sort=password"
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid sort order",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/tasks?sort=title&order=wrong"
+			},
+			"response": []
 		}
 	]
 }

@@ -1,9 +1,24 @@
 const connectDB = require("../config/database");
 
 //this returns every task from the database.
-async function getAllTasks() {
+async function getAllTasks(done, sort, order) {
     const db = await connectDB();
-    const tasks = await db.all("SELECT * FROM tasks");
+    const allowedSortFields = ["id", "title", "created_at"];
+    const allowedOrders = ["asc", "desc"];
+    const values = [];
+    let query = "SELECT * FROM tasks";
+
+    if (done !== undefined) {
+        query += " WHERE done = ?";
+        values.push(Number(done));
+    }
+
+    // Only add sorting values from the allowlists.
+    if (sort && allowedSortFields.includes(sort) && allowedOrders.includes(order)) {
+        query += ` ORDER BY ${sort} ${order.toUpperCase()}`;
+    }
+
+    const tasks = await db.all(query, values);
 
     return tasks;
 }
