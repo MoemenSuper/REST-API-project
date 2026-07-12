@@ -17,6 +17,7 @@ async function getAllTasks(req,res) {
 }
 
 async function getTaskById(req, res){
+    
     const id = Number(req.params.id);
 
     if (!Number.isInteger(id) || id <= 0) {
@@ -52,6 +53,7 @@ async function getTaskById(req, res){
 }
 
 async function createTask(req, res) {
+
     const title = req.body.title;
     const description = req.body.description;
 
@@ -68,7 +70,7 @@ async function createTask(req, res) {
 
     catch (error){
         console.log(error);
-        
+
         return res.status(500).json({
             message: "Unexpected failure."
         });
