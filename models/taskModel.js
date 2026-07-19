@@ -48,9 +48,32 @@ async function createTask(title, description) {
 
     return newTask;
 }
+async function updateTask(id,title,description) {
+    const db = await connectDB();
+    
+    const verify_task = await db.get(
+        "SELECT * FROM tasks WHERE id = ?",
+        [id]
+    )
+    if (!verify_task){
+        return undefined;
+    }
+
+    await db.run(
+        "UPDATE tasks SET title = ?, description = ? WHERE id = ?",
+         [title,description,id]
+    );
+
+    const updatedTask = await db.get("SELECT * from tasks WHERE id = ?",
+        [id]
+    );
+    
+    return updatedTask;
+}
 
 module.exports = {
     getAllTasks,
     getTaskById,
-    createTask
+    createTask,
+    updateTask
 };
