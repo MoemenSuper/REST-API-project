@@ -10,16 +10,7 @@ async function connectDatabase(){
         driver: sqlite3.Database
     });
 
-    // Creates the tasks table automatically if it does not exist yet.
-    await db.exec(`
-        CREATE TABLE IF NOT EXISTS tasks (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        description TEXT,
-        done INTEGER DEFAULT 0,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    `);
+    await createOrUpdateTasksTable(db);
 
     const result = await db.get(
         "SELECT COUNT(*) as count FROM tasks"
@@ -37,5 +28,48 @@ async function connectDatabase(){
         );
     }
     return db;
+}
+
+async function createTasksTable(db) {
+    await db.exec(`
+        CREATE TABLE tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT,
+        done BOOLEAN DEFAULT 0 CHECK (done IN (0, 1)),
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+}
+
+async function createOrUpdateTasksTable(db) {
+    const table = await db.get(
+        "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'tasks'"
+    );
+
+    if (!table) {
+        await createTasksTable(db);
+        return;
+    }
+
+    if (table.sql.includes("done BOOLEAN")) {
+        return;
+    }
+
+    try {
+        await db.exec("BEGIN TRANSACTION");
+        await db.exec("ALTER TABLE tasks RENAME TO tasks_old");
+        await createTasksTable(db);
+        await db.exec(`
+            INSERT INTO tasks (id, title, description, done, created_at)
+            SELECT id, title, description, CASE WHEN done = 1 THEN 1 ELSE 0 END, created_at
+            FROM tasks_old
+        `);
+        await db.exec("DROP TABLE tasks_old");
+        await db.exec("COMMIT");
+    } catch (error) {
+        await db.exec("ROLLBACK");
+        throw error;
+    }
 }
 module.exports = connectDatabase;
