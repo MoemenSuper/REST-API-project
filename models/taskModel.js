@@ -48,13 +48,14 @@ async function createTask(title, description) {
 
     return newTask;
 }
+
 async function updateTask(id,title,description) {
     const db = await connectDB();
     
     const verify_task = await db.get(
         "SELECT * FROM tasks WHERE id = ?",
         [id]
-    )
+    );
     if (!verify_task){
         return undefined;
     }
@@ -71,9 +72,29 @@ async function updateTask(id,title,description) {
     return updatedTask;
 }
 
+async function deleteTask(id){
+    const db = await connectDB();
+
+    const task_exist = await db.get(
+        "SELECT * FROM tasks WHERE id = ?",
+        [id]
+    );
+    if (!task_exist)
+        return undefined;
+    await db.run(
+        "DELETE FROM tasks WHERE id = ?",
+        [id]
+    );
+    
+    return {
+        message: "Task deleted successfully."
+    };
+}
+
 module.exports = {
     getAllTasks,
     getTaskById,
     createTask,
-    updateTask
+    updateTask,
+    deleteTask
 };
