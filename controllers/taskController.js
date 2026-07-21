@@ -132,19 +132,18 @@ async function createTask(req, res) {
 
 async function updateTask(req,res) {
 
-    const title = req.body.title;
-    const description = req.body.description;
     const id = Number(req.params.id);
-
-    const titleError = verify_title(title);
-
-    
 
     if (!Number.isInteger(id) || id <= 0) {
         return res.status(400).json({
             message: "Invalid task ID."
         });
     }
+    
+    const title = req.body.title;
+    const description = req.body.description;
+    const titleError = verify_title(title);
+
 
     if (titleError) {
         return res.status(400).json({
