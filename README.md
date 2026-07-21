@@ -165,5 +165,5 @@ Reponses gerees :
 Une collection Postman est incluse :
 
 ```text
-REST_API_Tasks_Week_2.postman_collection.json
+REST API Tasks- Full CRUD.postman_collection.json
 ```
