@@ -116,6 +116,50 @@ Reponses gerees :
 500 : erreur serveur
 ```
 
+### PUT `/api/tasks/:id`
+
+Met a jour une tache existante.
+
+Exemple :
+
+```bash
+PUT http://localhost:3000/api/tasks/1
+Content-Type: application/json
+
+{
+  "title": "Prepare presentation",
+  "description": "Review the API endpoints before the demo and update the slides."
+}
+```
+
+Reponses gerees :
+
+```text
+200 : tache mise a jour
+400 : identifiant ou donnees invalides
+404 : tache inexistante
+500 : erreur serveur
+```
+
+### DELETE `/api/tasks/:id`
+
+Supprime une tache existante.
+
+Exemple :
+
+```bash
+DELETE http://localhost:3000/api/tasks/1
+```
+
+Reponses gerees :
+
+```text
+200 : tache supprimee
+400 : identifiant invalide
+404 : tache inexistante
+500 : erreur serveur
+```
+
 ## Tests
 
 Une collection Postman est incluse :
